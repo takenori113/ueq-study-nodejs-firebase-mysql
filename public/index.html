@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ホーム画面（仮）</title>
+    <style>
+      .person-data {
+        border: 2px;
+        border-color: black;
+        border-style: solid;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>こちらはホーム画面です。</h1>
+    <div>
+      <h2>新規登録</h2>
+      <form>
+        <div>
+          <label for="name">名前:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            placeholder="お名前を入力してください"
+          />
+        </div>
+        <div>
+          <label for="birthdate">生年月日:</label>
+          <input type="date" id="birthdate" name="birthdate" required />
+        </div>
+        <div>
+          <label>性別:</label>
+          <input type="radio" id="male" name="gender" value="male" required />
+          <label for="male">男性</label>
+          <input type="radio" id="female" name="gender" value="female" />
+          <label for="female">女性</label>
+          <input type="radio" id="other" name="gender" value="other" />
+          <label for="other">その他</label>
+        </div>
+        <div>
+          <label for="remarks">備考:</label>
+          <textarea
+            id="remarks"
+            name="remarks"
+            rows="4"
+            cols="50"
+            maxlength="200"
+            placeholder="備考を入力してください（最大200文字）"
+          ></textarea>
+        </div>
+        <div>
+          <label for="photo">顔写真:</label>
+          <input type="file" id="photo" name="photo" accept="image/*" />
+        </div>
+        <button type="submit">送信</button>
+      </form>
+    </div>
+    <h2>人物名鑑</h2>
+    <div class="person-data">
+      <p>ここに人物データ</p>
+    </div>
+    <script src="/index.js"></script>
+  </body>
+</html>
