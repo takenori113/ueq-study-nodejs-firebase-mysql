@@ -1,5 +1,6 @@
-import { initializeApp } from "https://cdn.skypack.dev/firebase/app";
-import { getFirestore } from "https://cdn.skypack.dev/firebase/firestore";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js";
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCl1EDeOcxqQzKTkmhbg-l-D87PLufnjMg",
@@ -12,4 +13,5 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const firestore = getFirestore(app);
+export const storage = getStorage(app);
+export const firestore = getFirestore();

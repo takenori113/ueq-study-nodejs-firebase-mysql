@@ -1,9 +1,15 @@
 import { firestore } from "./firebase.js";
+import { storage } from "./firebase.js";
+import {
+  ref,
+  uploadBytes,
+} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js";
 import {
   collection,
   addDoc,
   getDocs,
-} from "https://cdn.skypack.dev/firebase/firestore";
+} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
 const inputNameRef = document.querySelector("#name");
 const inputBirthDateRef = document.querySelector("#birthdate");
 const inputNoteRef = document.querySelector("#note");
@@ -11,26 +17,42 @@ const inputPhotoRef = document.querySelector("#photo");
 const submitButtonRef = document.querySelector("#submit");
 const peopleListRef = document.querySelector("#people-list");
 
-//テストデータ、サーバーから取得することを想定
-// const people = [
-//   { name: "taro", gender: "male" },
-//   { name: "yuki", gender: "girl" },
-// ];
-
 const handleSubmit = async (e) => {
   e.preventDefault();
+  const file =  inputPhotoRef.files[0];
+  const fileName = nameFileName(file);
   const inputGenderRef = document.querySelector("input[name='gender']:checked");
   const person = {
     name: inputNameRef.value,
     gender: inputGenderRef ? inputGenderRef.value : "未選択",
     birth_date: inputBirthDateRef.value,
     note: inputNoteRef.value,
-    photo: inputPhotoRef.files[0]
-      ? inputPhotoRef.files[0].name
-      : "データがありません",
+    photo: file ? fileName : "データがありません",
   };
   console.log(person);
+  await handleSubmitPhoto(fileName,file);
   await addPeopleToFirestore(person);
+  location.reload();
+};
+
+const nameFileName =  (file) => {
+  if(file){
+    const ext = file.name.split(".").pop();
+    const fileName = `${Date.now()}.${ext}`;
+    return fileName;
+  }else{return undefined};
+};
+
+const handleSubmitPhoto = async (fileName,file) => {
+  if(file){
+    const filePath = `images/${fileName}`;
+    const fileRef = ref(storage, filePath);
+    await uploadBytes(fileRef, file);
+    console.log("uploaded a blob or file!");
+  }else{
+    return;
+  }
+
 };
 
 const showPeopleList = async () => {
@@ -68,4 +90,3 @@ const addPeopleToFirestore = async (person) => {
 window.addEventListener("load", showPeopleList);
 //登録ボタンにイベントを追加
 submitButtonRef.addEventListener("click", handleSubmit);
-submitButtonRef.addEventListener("click", showPeopleList);
