@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ホーム画面（仮）</title>
     <style>
+
       .people-list-item {
-        border: 2px;
-        border-color: black;
-        border-style: solid;
+        list-style-type: none; 
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc; 
+        background-color: #f9f9f9; 
+      }
+
+      .people-list-item li {
+        margin-bottom: 4px; 
       }
     </style>
   </head>
@@ -62,6 +69,6 @@
     <div class="people-list" id="people-list">
       <p>ここに人物データ</p>
     </div>
-    <script src="/index.js"></script>
+    <script src="/index.js" type="module"></script>
   </body>
 </html>
