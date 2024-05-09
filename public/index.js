@@ -67,8 +67,6 @@ const handleFileDownLoad = async (fileName) => {
   return url;
 };
 
-
-
 const showPeopleList = async () => {
   peopleListRef.innerHTML = "";
   const querySnapshot = await getDocs(collection(firestore, "people"));
@@ -109,19 +107,72 @@ const showPeopleList = async () => {
     const deleteButtonRef = document.createElement("button");
     deleteButtonRef.textContent = "削除";
     const editButtonRef = document.createElement("button");
+    editButtonRef.addEventListener("click", () => {
+      if (detailsList.classList.contains("hidden")) {
+        detailsList.classList.remove("hidden");
+      } else {
+        detailsList.classList.add("hidden");
+      }
+      if (editFormRef.classList.contains("hidden")) {
+        editFormRef.classList.remove("hidden");
+      } else {
+        editFormRef.classList.add("hidden");
+      }
+    });
     editButtonRef.textContent = "編集";
     buttonsRef.appendChild(deleteButtonRef);
     buttonsRef.appendChild(editButtonRef);
-    const handleDelete = async(e) => {
+    const handleDelete = async (e) => {
       e.preventDefault();
-      await deleteDoc(doc(firestore, "people",person.id));
+      await deleteDoc(doc(firestore, "people", person.id));
       location.reload();
     };
-    deleteButtonRef.addEventListener("click",handleDelete);
+    deleteButtonRef.addEventListener("click", handleDelete);
+
+    const editFormRef = document.createElement("form");
+    editFormRef.classList.add("edit-form");
+    editFormRef.classList.add("hidden");
+    editFormRef.innerHTML = `
+   <div> <input type="text" name="name" value="${
+     person.data().name
+   }" required> </div>
+   <div> <input type="radio" name="gender" value=",male" ${
+     person.data().gender === "male" ? "checked" : ""
+   }>男性</div>
+   <div> <input type="radio" name="gender" value="female" ${
+     person.data().gender === "female" ? "checked" : ""
+   }>女性</div>
+   <div> <input type="radio" name="gender" value="other" ${
+     person.data().gender === "other" ? "checked" : ""
+   }>その他</div>
+   <div> <input type="date" name="birth_date" value="${
+     person.data().birth_date
+   }"></div>
+   <div> <textarea name="note">${person.data().note}</textarea></div>
+   <div> <button type="submit">更新</button></div>
+  `;
+    editFormRef.onsubmit = async (e) => {
+      e.preventDefault();
+      const updatedPerson = {
+        name: editFormRef.querySelector('[name="name"]').value,
+        gender:
+          editFormRef.querySelector('[name="gender"]:checked')?.value ||
+          "未選択",
+        birth_date: editFormRef.querySelector('[name="birth_date"]').value,
+        note: editFormRef.querySelector('[name="note"]').value,
+      };
+      await updateDoc(doc(firestore, "people", person.id), updatedPerson);
+      location.reload();
+    };
+
+    noteItem.textContent = `Note: ${personData.note}`;
+    detailsList.appendChild(noteItem);
 
     peopleListItemRef.appendChild(photoItem);
     peopleListItemRef.appendChild(detailsList);
+    peopleListItemRef.appendChild(editFormRef);
     peopleListItemRef.appendChild(buttonsRef);
+
     peopleListRef.appendChild(peopleListItemRef);
   }
 };
