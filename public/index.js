@@ -9,6 +9,9 @@ import {
   collection,
   addDoc,
   getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
 const inputNameRef = document.querySelector("#name");
@@ -64,22 +67,26 @@ const handleFileDownLoad = async (fileName) => {
   return url;
 };
 
+
+
 const showPeopleList = async () => {
   peopleListRef.innerHTML = "";
   const querySnapshot = await getDocs(collection(firestore, "people"));
 
-  for (const doc of querySnapshot.docs) {
-    const personData = doc.data();
+  for (const person of querySnapshot.docs) {
+    const personData = person.data();
     const peopleListItemRef = document.createElement("div");
     peopleListItemRef.className = "people-list-item";
 
-    const photoUrl = personData.photo ? await handleFileDownLoad(personData.photo) : 'placeholder-image-url';
+    const photoUrl = personData.photo
+      ? await handleFileDownLoad(personData.photo)
+      : "placeholder-image-url";
 
     const photoItem = document.createElement("img");
     photoItem.setAttribute("src", photoUrl);
     photoItem.setAttribute("alt", "Person Photo");
 
-    const detailsList = document.createElement("ul"); 
+    const detailsList = document.createElement("ul");
 
     const nameItem = document.createElement("li");
     nameItem.textContent = `Name: ${personData.name}`;
@@ -97,12 +104,27 @@ const showPeopleList = async () => {
     noteItem.textContent = `Note: ${personData.note}`;
     detailsList.appendChild(noteItem);
 
-    peopleListItemRef.appendChild(photoItem); 
-    peopleListItemRef.appendChild(detailsList); 
+    const buttonsRef = document.createElement("div");
+    buttonsRef.className = "buttons";
+    const deleteButtonRef = document.createElement("button");
+    deleteButtonRef.textContent = "削除";
+    const editButtonRef = document.createElement("button");
+    editButtonRef.textContent = "編集";
+    buttonsRef.appendChild(deleteButtonRef);
+    buttonsRef.appendChild(editButtonRef);
+    const handleDelete = async(e) => {
+      e.preventDefault();
+      await deleteDoc(doc(firestore, "people",person.id));
+      location.reload();
+    };
+    deleteButtonRef.addEventListener("click",handleDelete);
+
+    peopleListItemRef.appendChild(photoItem);
+    peopleListItemRef.appendChild(detailsList);
+    peopleListItemRef.appendChild(buttonsRef);
     peopleListRef.appendChild(peopleListItemRef);
   }
 };
-
 
 const addPeopleToFirestore = async (person) => {
   await addDoc(collection(firestore, "people"), person);
