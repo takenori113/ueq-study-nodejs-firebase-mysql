@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ホーム画面（仮）</title>
     <style>
-      .person-data {
+      .people-list-item {
         border: 2px;
         border-color: black;
         border-style: solid;
@@ -41,10 +41,10 @@
           <label for="other">その他</label>
         </div>
         <div>
-          <label for="remarks">備考:</label>
+          <label for="note">備考:</label>
           <textarea
-            id="remarks"
-            name="remarks"
+            id="note"
+            name="note"
             rows="4"
             cols="50"
             maxlength="200"
@@ -55,11 +55,11 @@
           <label for="photo">顔写真:</label>
           <input type="file" id="photo" name="photo" accept="image/*" />
         </div>
-        <button type="submit">送信</button>
+        <button type="submit" id="submit">送信</button>
       </form>
     </div>
     <h2>人物名鑑</h2>
-    <div class="person-data">
+    <div class="people-list" id="people-list">
       <p>ここに人物データ</p>
     </div>
     <script src="/index.js"></script>
