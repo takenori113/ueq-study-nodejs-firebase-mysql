@@ -36,7 +36,7 @@ const handleSubmit = async (e) => {
   };
   console.log(person);
   await handleSubmitPhoto(file, fileName);
-  await addPeopleToFirestore(person);
+ await addDoc(collection(firestore, "people"), person);
   showPeopleList();
   resetForm();
 };
@@ -53,7 +53,7 @@ const createFileName = (file) => {
   }
 };
 
-const handleSubmitPhoto = async (file,fileName) => {
+const handleSubmitPhoto = async (file, fileName) => {
   if (file) {
     const filePath = `images/${fileName}`;
     const fileRef = ref(storage, filePath);
@@ -93,9 +93,6 @@ const showPeopleList = async () => {
   }
 };
 
-const addPeopleToFirestore = async (person) => {
-  await addDoc(collection(firestore, "people"), person);
-};
 const handleDelete = async (docId) => {
   await deleteDoc(doc(firestore, "people", docId));
   showPeopleList();
@@ -155,9 +152,7 @@ const createButtonPart = (doc, detailsList, editFormRef) => {
   editButtonRef.textContent = "編集";
   buttonsPart.appendChild(deleteButtonRef);
   buttonsPart.appendChild(editButtonRef);
-  deleteButtonRef.addEventListener("click", () => {
-    handleDelete(doc.id);
-  });
+  deleteButtonRef.addEventListener("click", () => handleDelete(doc.id));
   return buttonsPart;
 };
 
@@ -185,35 +180,36 @@ const createEditFormPart = (person) => {
  <div> <textarea name="note">${person.data().note}</textarea></div>
  <div> <button type="submit" name = "update-button">更新</button></div>
 `;
+
   editFormPart.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const updatedPerson = {
-      name: editFormPart.querySelector('[name="name"]').value,
-      gender:
-        editFormPart.querySelector('[name="gender"]:checked')?.value ||
-        "未選択",
-      birth_date: editFormPart.querySelector('[name="birth_date"]').value,
-      note: editFormPart.querySelector('[name="note"]').value,
-    };
-    await updateDoc(doc(firestore, "people", person.id), updatedPerson);
-    showPeopleList();
+    updatePerson(editFormPart,person)
   });
   return editFormPart;
 };
 
+const updatePerson = async(editFormPart,person)=>{
+  const editedPerson = {
+    name: editFormPart.querySelector('[name="name"]').value,
+    gender:
+      editFormPart.querySelector('[name="gender"]:checked')?.value ||
+      "未選択",
+    birth_date: editFormPart.querySelector('[name="birth_date"]').value,
+    note: editFormPart.querySelector('[name="note"]').value,
+  };
+  await updateDoc(doc(firestore, "people", person.id), editedPerson);
+  showPeopleList();
+};
+
+
 //フォームのリセット
 const resetForm = () => {
-  inputNameRef.value = '';
-  inputBirthDateRef.value = '';
-  inputNoteRef.value = '';
-  if (inputPhotoRef) {
-    inputPhotoRef.value = ''; 
-  }
-  
-  const genderInputs = document.querySelectorAll("input[name='gender']");
-  genderInputs.forEach(input => {
+  inputNameRef.value = "";
+  inputBirthDateRef.value = "";
+  inputNoteRef.value = "";
+  document.querySelectorAll("input[name='gender']").forEach(input => {
     input.checked = false;
   });
-};
+  };
 
 window.addEventListener("load", showPeopleList);
