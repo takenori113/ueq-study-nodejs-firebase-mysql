@@ -6,7 +6,7 @@
     <title>ホーム画面（仮）</title>
     <style>
       .hidden{
-        display:none;
+        display: none;
       }
       .edit-form {
         margin-left: 30px;
@@ -41,7 +41,7 @@
     </h3>
     <div>
       <h2>✏️新規登録✏️</h2>
-      <form id="add-from">
+      <form id="add-form">
         <div>
           <label for="name">名前:</label>
           <input
@@ -54,15 +54,15 @@
         </div>
         <div>
           <label for="birthdate">生年月日:</label>
-          <input type="date" id="birthdate" name="birthdate" required />
+          <input type="date" id="birth_date" name="birth_date" required />
         </div>
         <div>
           <label>性別:</label>
           <input type="radio" id="male" name="gender" value="male" required />
           <label for="male">男性</label>
-          <input type="radio" id="female" name="gender" value="female" />
+          <input type="radio" id="female" name="gender" value="female" required />
           <label for="female">女性</label>
-          <input type="radio" id="other" name="gender" value="other" />
+          <input type="radio" id="other" name="gender" value="other" required />
           <label for="other">その他</label>
         </div>
         <div>
