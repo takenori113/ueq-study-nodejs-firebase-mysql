@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js";
-// TODO: Replace the following with your app's Firebase project configuration
+
 const firebaseConfig = {
   apiKey: "AIzaSyCl1EDeOcxqQzKTkmhbg-l-D87PLufnjMg",
   authDomain: "people-list-with-photo.firebaseapp.com",

@@ -1,5 +1,4 @@
-import { firestore } from "./firebase.js";
-import { storage } from "./firebase.js";
+import { firestore, storage } from "./firebase.js";
 import {
   ref,
   uploadBytes,
@@ -36,7 +35,7 @@ const handleSubmit = async (e) => {
   };
   console.log(person);
   await handleSubmitPhoto(file, fileName);
- await addDoc(collection(firestore, "people"), person);
+  await addDoc(collection(firestore, "people"), person);
   showPeopleList();
   resetForm();
 };
@@ -58,10 +57,7 @@ const handleSubmitPhoto = async (file, fileName) => {
     const filePath = `images/${fileName}`;
     const fileRef = ref(storage, filePath);
     await uploadBytes(fileRef, file);
-    console.log("uploaded a blob or file!");
-  } else {
-    return;
-  }
+  } ;
 };
 
 //写真のダウンロード処理（URL発行）
@@ -183,17 +179,16 @@ const createEditFormPart = (person) => {
 
   editFormPart.addEventListener("submit", async (e) => {
     e.preventDefault();
-    updatePerson(editFormPart,person)
+    updatePerson(editFormPart, person);
   });
   return editFormPart;
 };
 
-const updatePerson = async(editFormPart,person)=>{
+const updatePerson = async (editFormPart, person) => {
   const editedPerson = {
     name: editFormPart.querySelector('[name="name"]').value,
     gender:
-      editFormPart.querySelector('[name="gender"]:checked')?.value ||
-      "未選択",
+      editFormPart.querySelector('[name="gender"]:checked')?.value || "未選択",
     birth_date: editFormPart.querySelector('[name="birth_date"]').value,
     note: editFormPart.querySelector('[name="note"]').value,
   };
@@ -201,15 +196,14 @@ const updatePerson = async(editFormPart,person)=>{
   showPeopleList();
 };
 
-
 //フォームのリセット
 const resetForm = () => {
   inputNameRef.value = "";
   inputBirthDateRef.value = "";
   inputNoteRef.value = "";
-  document.querySelectorAll("input[name='gender']").forEach(input => {
+  document.querySelectorAll("input[name='gender']").forEach((input) => {
     input.checked = false;
   });
-  };
+};
 
 window.addEventListener("load", showPeopleList);

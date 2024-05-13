@@ -3,17 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ホーム画面（仮）</title>
+    <meta property="og:title" content="人物名鑑" />
+    <meta
+      property="og:description"
+      content="自分の身の回りの人を登録しよう。遠くの親戚の人や仕事の上の薄い付き合いの人を登録しておくと忘れないから便利だぞ！"
+    />
+    <title>人物名鑑</title>
     <style>
-      .hidden{
-        display:none;
+      .hidden {
+        display: none;
       }
-      .edit-form {
-        margin-left: 30px;
-      }
+
+      .edit-form,
       .buttons {
         margin-left: 30px;
       }
+
       .people-list-item {
         list-style-type: none;
         padding: 8px;
@@ -22,71 +27,75 @@
         background-color: #f9f9f9;
         display: flex;
         align-items: center;
-      }
-      .people-list-item img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        margin-right: 10px;
-      }
-      .people-list-item li {
-        margin-bottom: 4px;
+
+        img {
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+          margin-right: 10px;
+        }
+
+        li {
+          margin-bottom: 4px;
+        }
       }
     </style>
   </head>
   <body>
     <h1>⭐️人物名鑑⭐️</h1>
-    <h3>
-      遠くの親戚の人や仕事の上の薄い付き合いの人を登録しておくと忘れないから便利だぞ！
-    </h3>
-    <div>
-      <h2>✏️新規登録✏️</h2>
-      <form id="add-from">
-        <div>
-          <label for="name">名前:</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            required
-            placeholder="お名前を入力してください"
-          />
-        </div>
-        <div>
-          <label for="birthdate">生年月日:</label>
-          <input type="date" id="birthdate" name="birthdate" required />
-        </div>
-        <div>
-          <label>性別:</label>
-          <input type="radio" id="male" name="gender" value="male" required />
-          <label for="male">男性</label>
-          <input type="radio" id="female" name="gender" value="female" />
-          <label for="female">女性</label>
-          <input type="radio" id="other" name="gender" value="other" />
-          <label for="other">その他</label>
-        </div>
-        <div>
-          <label for="note">備考:</label>
-          <textarea
-            id="note"
-            name="note"
-            rows="4"
-            cols="50"
-            maxlength="200"
-            placeholder="備考を入力してください（最大200文字）"
-          ></textarea>
-        </div>
-        <div>
-          <label for="photo">顔写真:</label>
-          <input type="file" id="photo" name="photo" accept="image/*" />
-        </div>
-        <button type="submit" id="submit">送信</button>
-      </form>
-    </div>
-    <h2>😃人物名鑑😃😃</h2>
-    <div class="people-list" id="people-list">
-      <p>ここに人物データ</p>
-    </div>
+    <article>
+      <h3>
+        遠くの親戚の人や仕事の上の薄い付き合いの人を登録しておくと忘れないから便利だぞ！
+      </h3>
+      <section>
+        <h2>✏️新規登録✏️</h2>
+        <form id="add-from">
+          <div>
+            <label for="name">名前:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              placeholder="お名前を入力してください"
+            />
+          </div>
+          <div>
+            <label for="birthdate">生年月日:</label>
+            <input type="date" id="birthdate" name="birthdate" required />
+          </div>
+          <div>
+            <label>性別:</label>
+            <input type="radio" id="male" name="gender" value="male" required />
+            <label for="male">男性</label>
+            <input type="radio" id="female" name="gender" value="female" />
+            <label for="female">女性</label>
+            <input type="radio" id="other" name="gender" value="other" />
+            <label for="other">その他</label>
+          </div>
+          <div>
+            <label for="note">備考:</label>
+            <textarea
+              id="note"
+              name="note"
+              rows="4"
+              cols="50"
+              maxlength="200"
+              placeholder="備考を入力してください（最大200文字）"
+            ></textarea>
+          </div>
+          <div>
+            <label for="photo">顔写真:</label>
+            <input type="file" id="photo" name="photo" accept="image/*" />
+          </div>
+          <button type="submit" id="submit">送信</button>
+        </form>
+      </section>
+      <h2>😃人物名鑑😃😃</h2>
+      <div class="people-list" id="people-list">
+        <p>ここに人物データ</p>
+      </div>
+    </article>
     <script src="/index.js" type="module"></script>
   </body>
 </html>
