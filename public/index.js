@@ -15,7 +15,9 @@ import {
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+  console.log("Form submitted");
   const data = await createData(e);
+  console.log("Data to add:", data); // デバッグ用ログ
   await handleAdd(data);
 };
 
@@ -53,16 +55,16 @@ const showPeopleList = async () => {
         <input type="text" name="name" value="${name}" required>
       </div>
       <div>
-        <input type="radio" id="male" name="gender" value="male" required>男性
+        <input type="radio" id="male" name="gender" value="male" >男性
       </div>
       <div>
-        <input type="radio" id="female" name="gender" value="female" required>女性
+        <input type="radio" id="female" name="gender" value="female" >女性
       </div>
       <div>
-        <input type="radio" id="other" name="gender" value="other" required>その他
+        <input type="radio" id="other" name="gender" value="other" >その他
       </div>
       <div>
-        <input type="date" name="birth_date" value="${birth_date}" required>
+        <input type="date" name="birth_date" value="${birth_date}" >
       </div>
       <div>
         <textarea name="note">${note}</textarea>
@@ -160,20 +162,19 @@ const uploadPhoto = async (file) => {
 };
 
 const resetForm = () => {
-  document.querySelector("#add-form #name").value = "";
-  document.querySelector("#add-form #birth_date").value = "";
-  document.querySelector("#add-form #note").value = "";
+  document.querySelector("#name").value = "";
+  document.querySelector("#birth_date").value = "";
+  document.querySelector("#note").value = "";
   document
-    .querySelectorAll("#add-form input[name='gender']")
+    .querySelectorAll("#input[name='gender']")
     .forEach((input) => {
       input.checked = false;
     });
-  document.querySelector("#add-form #photo").value = "";
+  document.querySelector("#photo").value = "";
 };
 
 window.addEventListener("load", async () => {
-  const submitButtonRef = document.querySelector("#add-form");
+  const submitButtonRef = document.querySelector("#add-from");
   submitButtonRef.addEventListener("submit", handleSubmit);
-
   await showPeopleList();
 });
