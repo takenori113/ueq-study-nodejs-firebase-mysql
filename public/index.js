@@ -35,11 +35,6 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
-const getUser = () =>
-  new Promise((resolve, reject) =>
-    auth.onAuthStateChanged((user) => (user ? resolve(user) : reject()))
-  );
-
 //人物の登録処理
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -52,8 +47,7 @@ const handleSubmit = async (e) => {
 const showPeopleList = async () => {
   const peopleListRef = document.querySelector("#people-list");
   peopleListRef.innerHTML = "";
-  const user = await getUser();
-  const idToken = await user.getIdToken();
+  const idToken = await auth.currentUser.getIdToken();
   const res = await fetch(`${url}/people`, {
     headers: { Authorization: `Bearer ${idToken}` },
   });
@@ -172,8 +166,7 @@ const createData = async (e) => {
 };
 
 const handleAdd = async (data) => {
-  const user = await getUser();
-  const idToken = await user.getIdToken();
+  const idToken = await auth.currentUser.getIdToken();
   await fetch(`${url}/people`, {
     method: "POST",
     headers: {
@@ -187,8 +180,7 @@ const handleAdd = async (data) => {
 };
 
 const handleUpdate = async (id, data) => {
-  const user = await getUser();
-  const idToken = await user.getIdToken();
+  const idToken = await auth.currentUser.getIdToken();
   await fetch(`${url}/people/${id}`, {
     method: "PUT",
     headers: {
@@ -202,8 +194,7 @@ const handleUpdate = async (id, data) => {
 };
 
 const handleDelete = async (id) => {
-  const user = await getUser();
-  const idToken = await user.getIdToken();
+  const idToken = await auth.currentUser.getIdToken();
   await fetch(`${url}/people/${id}`, {
     headers: { Authorization: `Bearer ${idToken}` },
     method: "DELETE",
