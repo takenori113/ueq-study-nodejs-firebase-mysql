@@ -1,4 +1,4 @@
-import {storage, auth, signOut } from "./firebase.js";
+import { storage, auth, signOut } from "./firebase.js";
 import {
   ref,
   uploadBytes,
@@ -13,6 +13,7 @@ auth.onAuthStateChanged(async (user) => {
     location.href = "/login.html";
   } else {
     uid = user.uid;
+
     const currentUserRef = document.getElementById("current-user");
     const currentUserEmail = document.createElement("div");
     const signOutButton = document.createElement("button");
@@ -21,17 +22,26 @@ auth.onAuthStateChanged(async (user) => {
     currentUserEmail.textContent = `${user.email}`;
     currentUserRef.appendChild(currentUserEmail);
     currentUserRef.appendChild(signOutButton);
-    console.log(user);
+    createUser();
     await showPeopleList();
   }
 });
-
+const createUser = async () => {
+  const idToken = await auth.currentUser.getIdToken();
+  await fetch(`${url}/createUser`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+  console.log(idToken);
+};
 //人物の登録処理
 const handleSubmit = async (e) => {
   e.preventDefault();
   console.log("Form submitted");
   const data = await createData(e);
-  console.log("Data to add:", data); // デバッグ用ログ
   await handleAdd(data);
 };
 
@@ -43,7 +53,6 @@ const showPeopleList = async () => {
     headers: { Authorization: `Bearer ${idToken}` },
   });
   const registeredPeople = await res.json();
-  console.log(registeredPeople);
 
   for (const person of registeredPeople) {
     const { name, gender, birth_date, note, photo } = person;
