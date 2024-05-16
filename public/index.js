@@ -22,7 +22,7 @@ auth.onAuthStateChanged(async (user) => {
     currentUserEmail.textContent = `${user.email}`;
     currentUserRef.appendChild(currentUserEmail);
     currentUserRef.appendChild(signOutButton);
-    createUser();
+    await createUser();
     await showPeopleList();
   }
 });

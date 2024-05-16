@@ -46,21 +46,22 @@ app.post("/createUser", (req, res) => {
         res.send("ok");
         return;
       }
-    }
-  );
-  connection.query(
-    "INSERT INTO user (uid) values(?)",
-    [req.uid],
-    (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send("error");
-        return;
-      }
-      res.send("new user is created");
+      connection.query(
+        "INSERT INTO user (uid) values(?)",
+        [req.uid],
+        (error, results) => {
+          if (error) {
+            console.log(error);
+            res.status(500).send("error");
+            return;
+          }
+          res.send("new user is created");
+        }
+      );
     }
   );
 });
+
 app.get("/people", (req, res) => {
   connection.query(
     "SELECT * FROM people where uid = ?",
