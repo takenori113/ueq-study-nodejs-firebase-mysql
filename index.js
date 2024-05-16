@@ -32,7 +32,7 @@ connection.connect((err) => {
   console.log("success");
 });
 
-app.post("/createUser", () => {
+app.post("/createUser", (req, res) => {
   connection.query(
     "select * from user where uid = ?",
     [req.uid],
@@ -46,21 +46,22 @@ app.post("/createUser", () => {
         res.send("ok");
         return;
       }
-    }
-  );
-  connection.query(
-    "INSERT INTO user (uid) values(?)",
-    [req.uid],
-    (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send("error");
-        return;
-      }
-      res.send("ok");
+      connection.query(
+        "INSERT INTO user (uid) values(?)",
+        [req.uid],
+        (error, results) => {
+          if (error) {
+            console.log(error);
+            res.status(500).send("error");
+            return;
+          }
+          res.send("new user is created");
+        }
+      );
     }
   );
 });
+
 app.get("/people", (req, res) => {
   connection.query(
     "SELECT * FROM people where uid = ?",
@@ -146,7 +147,7 @@ app.delete("/people/:id", (req, res) => {
   console.log(req.body);
   connection.query(
     "delete from people where id = ? and uid = ?",
-    [id,req.uid],
+    [id, req.uid],
     (error, results) => {
       if (error) {
         console.log(error);

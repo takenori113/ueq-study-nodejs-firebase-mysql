@@ -6,7 +6,6 @@ initializeApp({ credential: cert(serviceAccount) });
 
 const verifyIdToken = async (req, _, next) => {
   const token = req.headers.authorization?.replace(/^Bearer\s/g, "");
-  console.log(token);
   if (token) {
     const user = await getAuth().verifyIdToken(token);
     req.uid = user.uid;
