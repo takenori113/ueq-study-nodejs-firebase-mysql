@@ -1,18 +1,9 @@
-import { firestore, storage, auth, signOut } from "./firebase.js";
+import {storage, auth, signOut } from "./firebase.js";
 import {
   ref,
   uploadBytes,
   getDownloadURL,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js";
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  query,
-  where,
-} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
 const url = "http://localhost:3000";
 let uid = "";
