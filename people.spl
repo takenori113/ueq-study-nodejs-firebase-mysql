@@ -1,0 +1,17 @@
+CREATE TABLE `user`(
+    `uid` VARCHAR(255) not null,
+    PRIMARY KEY (`uid`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE `people` (
+    id INT not null AUTO_INCREMENT,
+    name VARCHAR(100),
+    gender VARCHAR(10),
+    note VARCHAR(255),
+    photo VARCHAR(255),
+    birth_date VARCHAR(255),
+    `uid` VARCHAR(255) not null,
+    PRIMARY KEY(id)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE `people` ADD FOREIGN KEY (`uid`) REFERENCES `user` (`uid`);

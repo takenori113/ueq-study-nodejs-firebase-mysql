@@ -1,4 +1,4 @@
-import { firestore, storage } from "./firebase.js";
+import { firestore, storage, auth, signOut } from "./firebase.js";
 import {
   ref,
   uploadBytes,
@@ -7,12 +7,40 @@ import {
 import {
   collection,
   addDoc,
-  getDocs,
   updateDoc,
   deleteDoc,
   doc,
+  query,
+  where,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
+const url = "http://localhost:3000";
+let uid = "";
+
+auth.onAuthStateChanged(async (user) => {
+  if (!user) {
+    location.href = "/login.html";
+  } else {
+    uid = user.uid;
+    const currentUserRef = document.getElementById("current-user");
+    const currentUserEmail = document.createElement("div");
+    const signOutButton = document.createElement("button");
+    signOutButton.textContent = "サインアウト";
+    signOutButton.addEventListener("click", () => signOut(auth));
+    currentUserEmail.textContent = `${user.email}`;
+    currentUserRef.appendChild(currentUserEmail);
+    currentUserRef.appendChild(signOutButton);
+    console.log(user);
+    await showPeopleList();
+  }
+});
+
+const getUser = () =>
+  new Promise((resolve, reject) =>
+    auth.onAuthStateChanged((user) => (user ? resolve(user) : reject()))
+  );
+
+//人物の登録処理
 const handleSubmit = async (e) => {
   e.preventDefault();
   console.log("Form submitted");
@@ -24,24 +52,30 @@ const handleSubmit = async (e) => {
 const showPeopleList = async () => {
   const peopleListRef = document.querySelector("#people-list");
   peopleListRef.innerHTML = "";
+  const user = await getUser();
+  const idToken = await user.getIdToken();
+  const res = await fetch(`${url}/people`, {
+    headers: { Authorization: `Bearer ${idToken}` },
+  });
+  const registeredPeople = await res.json();
+  console.log(registeredPeople);
 
-  const querySnapshot = await getDocs(collection(firestore, "people"));
-  for (const person of querySnapshot.docs) {
-    const { name, gender, birth_date, note, photo } = person.data();
+  for (const person of registeredPeople) {
+    const { name, gender, birth_date, note, photo } = person;
 
-    // 公開サービスならアップロード時にURLを取得・保存の方が良さそう
-    let url = "";
+    //公開サービスならアップロード時にURLを取得・保存の方が良さそう
+    let photoUrl = "";
     if (photo) {
       const filePath = `images/${photo}`;
       const fileRef = ref(storage, filePath);
-      url = await getDownloadURL(fileRef);
+      photoUrl = await getDownloadURL(fileRef);
     }
 
     const peopleListItemRef = document.createElement("div");
     peopleListItemRef.id = `item-${person.id}`;
     peopleListItemRef.className = "people-list-item";
     peopleListItemRef.innerHTML = `
-    <img src="${url}" alt="Person Photo"></img>
+    <img src="${photoUrl}" alt="Person Photo"></img>
 
     <ul>
       <li>Name: ${name}</li>
@@ -64,7 +98,7 @@ const showPeopleList = async () => {
         <input type="radio" id="other" name="gender" value="other" >その他
       </div>
       <div>
-        <input type="date" name="birth_date" value="${birth_date}" >
+        <input type="text" name="birth_date" value="${birth_date}" >
       </div>
       <div>
         <textarea name="note">${note}</textarea>
@@ -132,23 +166,48 @@ const createData = async (e) => {
     birth_date: e.target.birth_date.value,
     note: e.target.note.value,
     photo: fileName,
+    uid,
   };
   return data;
 };
 
 const handleAdd = async (data) => {
-  await addDoc(collection(firestore, "people"), data);
+  const user = await getUser();
+  const idToken = await user.getIdToken();
+  await fetch(`${url}/people`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+    body: JSON.stringify(data),
+  });
   await showPeopleList();
   resetForm();
 };
 
-const handleUpdate = async (personId, data) => {
-  await updateDoc(doc(firestore, "people", personId), data);
+const handleUpdate = async (id, data) => {
+  const user = await getUser();
+  const idToken = await user.getIdToken();
+  await fetch(`${url}/people/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+    },
+    body: JSON.stringify(data),
+  });
+
   await showPeopleList();
 };
 
-const handleDelete = async (personId) => {
-  await deleteDoc(doc(firestore, "people", personId));
+const handleDelete = async (id) => {
+  const user = await getUser();
+  const idToken = await user.getIdToken();
+  await fetch(`${url}/people/${id}`, {
+    headers: { Authorization: `Bearer ${idToken}` },
+    method: "DELETE",
+  });
   await showPeopleList();
 };
 
@@ -165,16 +224,13 @@ const resetForm = () => {
   document.querySelector("#name").value = "";
   document.querySelector("#birth_date").value = "";
   document.querySelector("#note").value = "";
-  document
-    .querySelectorAll("#input[name='gender']")
-    .forEach((input) => {
-      input.checked = false;
-    });
+  document.querySelectorAll("#input[name='gender']").forEach((input) => {
+    input.checked = false;
+  });
   document.querySelector("#photo").value = "";
 };
 
 window.addEventListener("load", async () => {
   const submitButtonRef = document.querySelector("#add-from");
   submitButtonRef.addEventListener("submit", handleSubmit);
-  await showPeopleList();
 });
